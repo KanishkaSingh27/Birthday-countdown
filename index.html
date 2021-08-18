@@ -1,0 +1,227 @@
+<html>
+<head><title> Birthday Countdown</title></head>
+<div class="bg"></div>
+<div class="bg bg2"></div>
+<div class="bg bg3"></div>
+<div class="content">
+  <h1>Enter your birthday (future birthday):<br>
+    <div class="search-wrapper">
+	<form>
+	<input type="text" name="focus" required class="search-box" placeholder="DD/MM/YYYY" id="myDate" />
+		<button class="close-icon" type="reset"></button>
+    </form>
+    <br>
+<input type="button" id="startButton" value="Start counting"><br>
+<div id="countdown"></div></h1>
+</div>
+  <BR>
+<script>
+var end; // = new Date();
+         // document.getElementById("myDate").value = end;
+
+// Also need a global timer reference so it can be cancelled when required		 
+var timer;
+
+// Since listener is attached by addEventListener, event will only be passed
+// if the call comes from the button
+function showRemaining(event) {
+  // Function to cancel the timer
+  function stopTimer(){
+    if (timer) {
+	  clearInterval(timer);
+	  end = timer = null;
+	}
+  }
+  
+  // Keep these local
+  var _second = 1000;
+  var _minute = _second * 60;
+  var _hour = _minute * 60;
+  var _day = _hour * 24;
+  var _month = _day * 30;
+  
+  // If click came from the button or timer isn't set, restart the timer
+  if (event || !timer) {
+    stopTimer();
+	timer = setInterval(showRemaining, 1000);
+  }
+
+  // Get the current date
+  var now = new Date();
+  
+  // Get the value of countdown and parse it, see parsing function
+  // If end isn't set, set it
+  if (!end) end = parseDateDMY(document.getElementById("myDate").value);
+  var distance = end - now;
+ 
+  // If gone past end, stop the timer 
+  if (distance < 0) {
+    stopTimer();
+    document.getElementById('countdown').innerHTML = 'EXPIRED!';
+
+  } else {
+    var months = Math.floor(distance / _month);
+    var days = Math.floor((distance % _month) / _day);
+    var hours = Math.floor((distance % _day) / _hour);
+    var minutes = Math.floor((distance % _hour) / _minute);
+    var seconds = Math.floor((distance % _minute) / _second);
+
+    // Write the time remaining directly to the element
+    document.getElementById('countdown').innerHTML = months + 'months ' +            
+	                                                 days + 'days ' +
+													 hours + 'hrs ' +
+													 minutes + 'mins ' +
+													 seconds + 'secs';
+  }
+}
+
+// No need to do this, wait for button click
+// timer = setInterval(showRemaining, 1000); 
+
+// Parse date string in format d/m/y
+function parseDateDMY(s) {
+  var b = s.split(/\D/);
+  var d = new Date(b[2], --b[1], b[0]);
+  return d && d.getMonth() == b[1]? d : new Date(NaN);
+}
+
+// Add listener to button
+window.onload = function() {
+  document.getElementById('startButton').addEventListener('click',showRemaining,false);
+}
+</script>
+<style>
+html {
+  height:100%;
+}
+
+body {
+  margin:0;
+}
+
+.bg {
+  animation:slide 3s ease-in-out infinite alternate;
+  background-image: linear-gradient(-60deg, #6c3 50%, #09f 50%);
+  bottom:0;
+  left:-50%;
+  opacity:.5;
+  position:fixed;
+  right:-50%;
+  top:0;
+  z-index:-1;
+}
+
+.bg2 {
+  animation-direction:alternate-reverse;
+  animation-duration:4s;
+}
+
+.bg3 {
+  animation-duration:5s;
+}
+
+.content {
+  background-color:rgba(255,255,255,.8);
+  border-radius:.25em;
+  box-shadow:0 0 .25em rgba(0,0,0,.25);
+  box-sizing:border-box;
+  left:50%;
+  padding:10vmin;
+  position:fixed;
+  text-align:center;
+  top:50%;
+  transform:translate(-50%, -50%);
+}
+
+h1 {
+  font-family:monospace;
+}
+
+@keyframes slide {
+  0% {
+    transform:translateX(-25%);
+  }
+  100% {
+    transform:translateX(25%);
+  }
+}
+#startButton{
+ width: 130px;
+  height: 40px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+   box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+   7px 7px 20px 0px rgba(0,0,0,.1),
+   4px 4px 5px 0px rgba(0,0,0,.1);
+  outline: none;
+}
+
+#startButton {
+  background: rgb(6,14,131);
+  background: linear-gradient(0deg, rgba(6,14,131,1) 0%, rgba(12,25,180,1) 100%);
+  border: none;
+}
+#startButton:hover {
+   background: rgb(0,3,255);
+background: linear-gradient(0deg, rgba(0,3,255,1) 0%, rgba(2,126,251,1) 100%);
+}
+.search-box,.close-icon,.search-wrapper {
+	position: relative;
+	padding: 10px;
+}
+.search-wrapper {
+	width: 500px;
+	margin: auto;
+	margin-top: 50px;
+}
+.search-box {
+	width: 80%;
+	border: 1px solid #ccc;
+  outline: 0;
+  border-radius: 15px;
+}
+.search-box:focus {
+	box-shadow: 0 0 15px 5px #b0e0ee;
+	border: 2px solid #bebede;
+}
+.close-icon {
+	border:1px solid transparent;
+	background-color: transparent;
+	display: inline-block;
+	vertical-align: middle;
+  outline: 0;
+  cursor: pointer;
+}
+.close-icon:after {
+	content: "X";
+	display: block;
+	width: 15px;
+	height: 15px;
+	position: absolute;
+	background-color: #FA9595;
+	z-index:1;
+	right: 35px;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	padding: 2px;
+	border-radius: 50%;
+	text-align: center;
+	color: white;
+	font-weight: normal;
+	font-size: 12px;
+	box-shadow: 0 0 2px #E50F0F;
+	cursor: pointer;
+}
+.search-box:not(:valid) ~ .close-icon {
+	display: none;
+}
+</style>
